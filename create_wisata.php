@@ -11,6 +11,9 @@
     }
 
     if (isset($_POST['submit'])) {
+        if(isset($_FILES['foto'])) {
+            $_POST['foto'] = $_FILES['foto'];
+        }
         $controller = new UsahaController();
         $usaha = $controller->store($_POST);
     }
@@ -103,7 +106,7 @@
                                 </span>
                             </div>
                             <div class="card-body">
-                                <form action="#" method="POST">
+                                <form action="#" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="kategori" value="wisata">
                                     <input type="hidden" name="user_id" value="<?php echo $_SESSION['admin']['id']; ?>">
                                     <div class="row">
@@ -170,7 +173,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="foto">Foto <small>(Max 3 Foto)</small></label>
-                                                <input type="file" class="form-control" name="foto">
+                                                <input type="file" class="form-control" name="foto[]" multiple>
                                             </div>
                                             <div class="form-group">
                                                 <label for="alamat">Alamat</label>
@@ -199,7 +202,7 @@
                                                 <label for="alamat">Harga Tiket Dewasa Akhir Pekan
                                                     (sabtu-minggu)</label>
                                                 <input type="text" class="form-control numeric"
-                                                    id="harga_tiket_dewasa_akhir_pekan" name="harga_weekday_dewasa"
+                                                    id="harga_tiket_dewasa_akhir_pekan" name="harga_weekend_dewasa"
                                                     placeholder="10000">
                                             </div>
                                             <div class="form-group">

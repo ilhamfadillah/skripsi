@@ -11,6 +11,7 @@
     }
 
     if (isset($_POST['update'])) {
+        var_dump($_FILES);exit;
         $controller = new UsahaController();
         $usaha = $controller->update($_GET['id'], $_POST);
     }
@@ -113,7 +114,7 @@
                                 </span>
                             </div>
                             <div class="card-body">
-                                <form action="#" method="POST">
+                                <form action="#" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="kategori" value="umkm">
                                     <div class="row">
                                         <div class="col-sm-6">
@@ -142,7 +143,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="foto">Foto <small>(Max 3 Foto)</small></label>
-                                                <input type="file" class="form-control" name="foto">
+                                                <input type="file" class="form-control" name="foto[]" multiple>
                                             </div>
                                             <div class="form-group">
                                                 <label for="kecamatan">Kecamatan</label>

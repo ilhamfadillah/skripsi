@@ -1,6 +1,7 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/skripsi/model/UsahaModel.php';
 require $_SERVER['DOCUMENT_ROOT'].'/skripsi/model/WisataModel.php';
+require $_SERVER['DOCUMENT_ROOT'].'/skripsi/model/GaleriModel.php';
 require $_SERVER['DOCUMENT_ROOT'].'/skripsi/fpdf/fpdf.php';
 
 class UsahaController
@@ -8,7 +9,8 @@ class UsahaController
     public function __construct()
     {
         $this->usaha = new UsahaModel();
-		$this->wisata = new WisataModel();
+        $this->wisata = new WisataModel();
+        $this->galeri = new GaleriModel();
     }
 
     public function get_all_wisata()
@@ -41,6 +43,20 @@ class UsahaController
 
         // input ke database dan akan return id
         $usaha = $this->usaha->create($dataUsaha);
+        if (array_key_exists('foto', $request)) {
+            $foto_rows = $request['foto'];
+            $data = [];
+            foreach ($foto_rows['name'] as $key => $row) {
+                $split = explode('/', $foto_rows['type'][$key]);
+                $ekstensi = end($split);
+                $nama = md5($row) . "." . $ekstensi;
+                $move = move_uploaded_file($foto_rows['tmp_name'][$key], "../skripsi/image/".$nama);
+                $data['usaha_id'] = $usaha;
+                $data['nama'] = $nama;
+                $data['urutan'] = $key + 1;
+                $galeri = $this->galeri->create($data);
+            }
+        }
 
         // jika kategori yang dimaksud adalah tempat wisata
         if ($request['kategori'] == "wisata") {
@@ -52,11 +68,12 @@ class UsahaController
                 "harga_weekend_dewasa" => $request['harga_weekend_dewasa'],
                 "jam_buka_weekday" => $request['jam_buka_hari_biasa'],
                 "jam_tutup_weekday" => $request['jam_tutup_hari_biasa'],
-                "jam_buka_weekend" => $request['jam_buka_hari_weekend'],
-                "jam_tutup_weekend" => $request['jam_tutup_hari_weekend'],
-            ];
-            $wisata = $this->wisata->create($dataWisata);
+                    "jam_buka_weekend" => $request['jam_buka_hari_weekend'],
+                    "jam_tutup_weekend" => $request['jam_tutup_hari_weekend'],
+                ];
         }
+
+        $wisata = $this->wisata->create($dataWisata);
 
         header("Location: ". $request['kategori'] ."_home.php");
     }
@@ -136,8 +153,49 @@ class UsahaController
             foreach ($row as $row=>$column) {
                 $pdf->Cell(40, 12, $column, 1);
             }
-		}
-		
+        }
+        
         $pdf->Output();
+    }
+
+    public function filter($request)
+    {
+        $filter = [];
+        if ($request['filter_kecamatan'] != 0) {
+            $filter['kecamatan_id'] = $request['filter_kecamatan'];
+        }
+
+        if ($request['filter_kelurahan'] != 0) {
+            $filter['kelurahan_id'] = $request['filter_kelurahan'];
+        }
+
+
+        if ($request['filter_kategori'] != '0') {
+            $filter['kategori'] = $request['filter_kategori'];
+        }
+
+        switch ($request['filter_urutkan']) {
+            case 'asc_nama':
+                $urutkan = "nama_produk ASC";
+                break;
+            case 'desc_nama':
+                $urutkan = "nama_produk DESC";
+                break;
+            case 'terdekat':
+                $urutkan = "distance ASC";
+                break;
+            case 'terjauh':
+                $urutkan = "distance DESC";
+                break;
+            default:
+                $urutkan = "id ASC";
+                break;
+        }
+        
+        $latitude = $request['latitude'];
+        $longitude = $request['longitude'];
+
+        $result = $this->usaha->doFilter($filter, $urutkan, $latitude, $longitude);
+        return $result;
     }
 }

@@ -15,3 +15,5 @@ if ($conn->connect_error) {
 require_once "controller/UserController.php";
 require_once "controller/UsahaController.php";
 require_once "model/UsahaModel.php";
+// require_once "model/WisataModel.php";
+// require_once "model/GaleriModel.php";
