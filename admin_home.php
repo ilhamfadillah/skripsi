@@ -6,7 +6,7 @@
         header("Location: login.php");
     }
 
-    if(isset($_GET['logout'])){
+    if (isset($_GET['logout'])) {
         $controller = new UserController();
         $redirect = $controller->logout($_GET);
     }
@@ -24,24 +24,23 @@
         die();
     }
 
-    if (isset($_POST['map_kecamatan_id'])) 
-    {
+    if (isset($_POST['map_kecamatan_id'])) {
         $condition = array();
-        if($_POST['map_kecamatan_id'] != 0){
-            $condition['kecamatan_id'] = $_POST['map_kecamatan_id']; 
+        if ($_POST['map_kecamatan_id'] != 0) {
+            $condition['kecamatan_id'] = $_POST['map_kecamatan_id'];
         }
 
-        if($_POST['map_kelurahan_id'] != 0){
-            $condition['kelurahan_id'] = $_POST['map_kelurahan_id']; 
+        if ($_POST['map_kelurahan_id'] != 0) {
+            $condition['kelurahan_id'] = $_POST['map_kelurahan_id'];
         }
 
-        if($_POST['map_jenis_usaha'] != 'semua'){
+        if ($_POST['map_jenis_usaha'] != 'semua') {
             $condition['kategori'] = $_POST['map_jenis_usaha'];
         }
 
-        if(sizeof($condition) != 0){
+        if (sizeof($condition) != 0) {
             $get_usaha = $usaha_model->get_all_row_by_condition($condition);
-        }else{
+        } else {
             $get_usaha = $usaha_model->get_all();
         }
 
@@ -49,7 +48,7 @@
         die();
     }
 
-    if(isset($_POST['submit_pdf'])){
+    if (isset($_POST['submit_pdf'])) {
         $usaha = new UsahaController();
         $toPdf = $usaha->generatePdf($_POST);
     }
@@ -333,6 +332,34 @@
                 }).setHTML(html))
                 .addTo(map);
         });
+
+        map.on('load', function() {
+
+            map.addLayer({
+                'id': 'maine',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                    <?php
+                                        include "arrayPolygon.php";
+                                        echo $polygonCoordinate;
+                                    ?>
+                            ]
+                        }
+                    }
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.3
+                }
+            });
+        });
     }
 
     $('#wrapper').on('click', '.pdf', function(e) {
@@ -352,7 +379,7 @@
             },
             success: function(data) {}
         });
-    })
+    });
     </script>
 
 </body>

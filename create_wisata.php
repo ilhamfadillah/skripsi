@@ -347,6 +347,34 @@
             zoom: 13
         });
 
+        map.on('load', function() {
+
+            map.addLayer({
+                'id': 'maine',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                    <?php
+                                        include "arrayPolygon.php";
+                                        echo $polygonCoordinate;
+                                    ?>
+                            ]
+                        }
+                    }
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.3
+                }
+            });
+        });
+
         var marker = new mapboxgl.Marker();
         var latitude = 0;
         var longitude = 0;

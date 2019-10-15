@@ -37,11 +37,11 @@ if (isset($_GET['usaha_id'])) {
         'usaha_id' => $_GET['usaha_id']
     ];
     $galeri_rows = $galeri_model->get_all_row_by_condition($galeri_condition);
-    if(sizeof($galeri_rows) != 0){
+    if (sizeof($galeri_rows) != 0) {
         $data['galeri'] = $galeri_rows;
     }
     // Wisata
-    if($usaha_row_by_condition['kategori'] == 'wisata'){
+    if ($usaha_row_by_condition['kategori'] == 'wisata') {
         $wisata_condition = [
             'usaha_id' => $_GET['usaha_id']
         ];
@@ -297,7 +297,7 @@ if (isset($_GET['usaha_id'])) {
                         ' - ' + data.wisata.jam_tutup_weekend + '</li>' +
                         '</ul>' +
                         '<p>' + data.usaha.deskripsi + '</p>' +
-                        '<center><div id="map" style="height:300px"></div></center>' +
+                        '<center><div id="map" style="height:400px"></div></center>' +
                         '</div>' +
                         '<!-- Modal footer -->' +
                         '<div class="modal-footer">' +
@@ -320,7 +320,7 @@ if (isset($_GET['usaha_id'])) {
                         '<li>Telepon : ' + data.usaha.nomor_telepon + '</li>' +
                         '</ul>' +
                         '<p>' + data.usaha.deskripsi + '</p>' +
-                        '<center><div id="map" style="height:300px"></div></center>' +
+                        '<center><div id="map" style="height:400px"></div></center>' +
                         '</div>' +
                         '<!-- Modal footer -->' +
                         '<div class="modal-footer">' +

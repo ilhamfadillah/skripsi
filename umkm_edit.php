@@ -80,9 +80,9 @@
             <div class="sidebar-heading">Kabupaten Bandung </div>
             <div class="list-group list-group-flush">
                 <a href="/skripsi/admin_home.php" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-                <a href="/skripsi/umkm_home.php" class="list-group-item list-group-item-action bg-light">UMKM</a>
+                <a href="/skripsi/umkm_home.php" class="list-group-item list-group-item-action bg-dark text-white">UMKM</a>
                 <a href="/skripsi/wisata_home.php"
-                    class="list-group-item list-group-item-action bg-dark text-white">Wisata</a>
+                    class="list-group-item list-group-item-action bg-light">Wisata</a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -332,6 +332,34 @@
             style: 'mapbox://styles/mapbox/streets-v11',
             center: coordinate,
             zoom: 13
+        });
+
+        map.on('load', function() {
+
+            map.addLayer({
+                'id': 'maine',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                    <?php
+                                        include "arrayPolygon.php";
+                                        echo $polygonCoordinate;
+                                    ?>
+                            ]
+                        }
+                    }
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#088',
+                    'fill-opacity': 0.3
+                }
+            });
         });
 
         var marker = new mapboxgl.Marker();
