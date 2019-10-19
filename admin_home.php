@@ -76,7 +76,6 @@
     <link rel="stylesheet" href="public/select2-bootstrap4-theme/select2-bootstrap4.css">
     <style>
     .marker {
-        background-image: url('mapbox-icon.png');
         background-size: cover;
         width: 50px;
         height: 50px;
@@ -310,9 +309,13 @@
             var latitude = marker.latitude;
             var coordinate = [longitude, latitude];
             // create a HTML element for each feature
-            // var el = document.createElement('div');
-            // el.className = 'marker';
 
+            var el = document.createElement('div');
+            el.className = 'marker';
+            el.style.backgroundImage = 'url(mapbox-icon-'+marker.kategori+'.png)';
+            el.style.width = '40px';
+            el.style.height = '40px';
+            
             if (marker.kategori == 'umkm') {
                 var html = "<h3>" + marker.nama_produk + "</h3>" +
                     "<img src='https://www.sahabat-ukm.com/wp-content/uploads/2016/05/icon-pasar.png' class='img-responsive' width='125px' height='125px'>" +
@@ -325,7 +328,7 @@
 
 
             // make a marker for each feature and add to the map
-            new mapboxgl.Marker()
+            new mapboxgl.Marker(el)
                 .setLngLat(coordinate)
                 .setPopup(new mapboxgl.Popup({
                     offset: 50
@@ -345,10 +348,10 @@
                         'geometry': {
                             'type': 'Polygon',
                             'coordinates': [
-                                    <?php
-                                        include "arrayPolygon.php";
-                                        echo $polygonCoordinate;
-                                    ?>
+                                <?php
+                                include "arrayPolygon.php";
+                                echo $polygonCoordinate;
+                                ?>
                             ]
                         }
                     }
