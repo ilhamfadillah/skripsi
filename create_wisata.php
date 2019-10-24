@@ -11,7 +11,7 @@
     }
 
     if (isset($_POST['submit'])) {
-        if(isset($_FILES['foto'])) {
+        if($_FILES['foto']['name'][0] != ""){
             $_POST['foto'] = $_FILES['foto'];
         }
         $controller = new UsahaController();
@@ -105,15 +105,16 @@
                                     </span>
                                 </span>
                             </div>
+                            <div class="alert alert-danger" role="alert" style="display:none"></div>
                             <div class="card-body">
-                                <form action="#" method="POST" enctype="multipart/form-data">
+                                <form action="#" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                                     <input type="hidden" name="kategori" value="wisata">
                                     <input type="hidden" name="user_id" value="<?php echo $_SESSION['admin']['id']; ?>">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="email">Nama Pengelola</label>
-                                                <input type="text" class="form-control" id="namaa_perusahaan"
+                                                <input type="text" class="form-control" id="nama_perusahaan"
                                                     placeholder="Nama Pengelola" name="nama_perusahaan">
                                             </div>
                                             <div class="form-group">
@@ -123,7 +124,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="nomor_telepon">Nomor Telepon</label>
-                                                <input type="text" class="form-control" id="nama_produk"
+                                                <input type="text" class="form-control" id="nomor_telepon"
                                                     placeholder="Nama Tempat" name="nomor_telepon">
                                             </div>
                                             <div class="form-group">
@@ -173,7 +174,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="foto">Foto <small>(Max 3 Foto)</small></label>
-                                                <input type="file" class="form-control" name="foto[]" multiple>
+                                                <input type="file" class="form-control" id="foto" name="foto[]" multiple>
                                             </div>
                                             <div class="form-group">
                                                 <label for="alamat">Alamat</label>
@@ -402,6 +403,58 @@
             $("#toggle-icon").removeClass('fa-arrow-right').addClass('fa-arrow-left');
         }
     });
+
+    function validateForm() {
+        var nama_pengelola = $('#nama_perusahaan').val();
+        var nama_tempat = $('#nama_produk').val();
+        var alamat = $('#alamat').val();
+        var message = "";
+
+        if(nama_pengelola == ""){
+            message += "<li>Nama Pengelola Wajib Diisi</li>"
+        }
+        if(nama_tempat == ""){
+            message += "<li>Nama Tempat Wajib Diisi</li>"
+        }
+        if(alamat == ""){
+            message += "<li>Alamat Wajib Diisi</li>"
+        }
+
+        if($('#foto').val() !== undefined){
+            var foto = $('#foto').get(0).files;
+            if(foto.length > 3){
+                message += "<li>Maksimal 3 Foto</li>";
+            }
+            var ukuran_foto = "";
+            var format_foto = "";
+            for(var i=0; i<foto.length; i++){
+                if(foto[i].size/1024 > 2048){
+                    ukuran_foto += "true"; 
+                }
+                var ext = foto[i].type.split('/').pop().toLowerCase();
+                if($.inArray(ext,['jpg','jpeg','gif', 'png']) === -1){
+                    format_foto += "true";
+                }
+            }
+
+            if(ukuran_foto != ''){
+                message += "<li>Ukuran File Foto Harus Dibawah 2MB</li>"
+            }
+
+            if(format_foto != ''){
+                message += "<li>Format File Foto Tidak Sesuai</li>";
+            }
+        }
+        
+        if(message != ""){            
+            $('.alert').empty();
+            $('.alert').append("<ul>"+message+"</ul>");
+            $('.alert').show();
+            return false;
+        }else{
+            return true;
+        }
+    }
     </script>
 
 </body>
