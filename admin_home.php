@@ -316,6 +316,8 @@
             el.style.width = '40px';
             el.style.height = '40px';
             
+            console.log(el.style);
+
             if (marker.kategori == 'umkm') {
                 var html = "<h3>" + marker.nama_produk + "</h3>" +
                     "<img src='https://www.sahabat-ukm.com/wp-content/uploads/2016/05/icon-pasar.png' class='img-responsive' width='125px' height='125px'>" +

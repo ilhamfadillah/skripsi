@@ -96,6 +96,24 @@ class UsahaController
         // update
         $usaha = $this->usaha->update($id, $dataUsaha);
 
+        if (array_key_exists('foto', $request)) {
+            $delete_foto = $this->galeri->delete_by_condition([
+                "usaha_id" => $id
+            ]);
+            $foto_rows = $request['foto'];
+            $data = [];
+            foreach ($foto_rows['name'] as $key => $row) {
+                $split = explode('/', $foto_rows['type'][$key]);
+                $ekstensi = end($split);
+                $nama = md5($row) . "." . $ekstensi;
+                $move = move_uploaded_file($foto_rows['tmp_name'][$key], "../skripsi/image/".$nama);
+                $data['usaha_id'] = $id;
+                $data['nama'] = $nama;
+                $data['urutan'] = $key + 1;
+                $galeri = $this->galeri->create($data);
+            }
+        }
+
         // jika kategori yang dimaksud adalah tempat wisata
         if ($request['kategori'] == "wisata") {
             $dataWisata = [
@@ -112,6 +130,21 @@ class UsahaController
         }
 
         header("Location: ". $request['kategori'] ."_home.php");
+    }
+
+    public function delete($usaha_id, $kategori)
+    {
+        if($kategori == 'wisata'){
+            $delete_wisata = $this->wisata->delete($usaha_id);
+        }
+
+        $delete_galeri = $this->galeri->delete_by_condition([
+            "usaha_id" => $usaha_id
+        ]);
+        
+        $delete_usaha = $this->usaha->delete($usaha_id);
+
+        header("Location: ". $kategori ."_home.php");
     }
 
     public function generatePdf($request)

@@ -1,6 +1,10 @@
 <?php
-
 include "config.php";
+
+// session_start();
+// if (isset($_SESSION["admin"])) {
+//     header("Location: admin_home.php");
+// }
 
 $usaha_controller = new UsahaController();
 $usaha_model = new UsahaModel();
@@ -137,15 +141,31 @@ if (isset($_GET['usaha_id'])) {
             <?php foreach ($usaha_rows as $row) { ?>
             <div class="col-lg-4 col-sm-6 mb-4 my-card" id="usaha-<?php echo $row['id'] ?>">
                 <div class="card h-100">
-                    <?php
-                        $galeri_row = $galeri_model->get_one_row_by_usaha_id($row['id']);
-                        if (!is_null($galeri_row)) {
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <?php
+                        $galeri_row = $galeri_model->get_all_row_by_usaha_id($row['id']);
+                        if (sizeof($galeri_row) > 0) {
+                            $i = 0;
+                            foreach ($galeri_row as $foto) {
+                                $i++;
+                                if($i == 1){
                             ?>
-                    <img class="card-img-top" src="./image/<?php echo $galeri_row['nama']; ?>" alt="">
-                    <?php
+                                <div class="carousel-item active">
+                                    <img class="card-img-top" src="./image/<?php echo $foto['nama']; ?>" alt="" />
+                                </div>
+                            <?php }else{ ?>
+                                <div class="carousel-item">
+                                    <img class="card-img-top" src="./image/<?php echo $foto['nama']; ?>" alt="">
+                                </div>
+                            <?php
+                                }
+                            }     
                         } else { ?>
-                    <img class="card-img-top" src="http://placehold.it/700x400" alt="">
-                    <?php } ?>
+                            <img class="card-img-top" src="http://placehold.it/700x400" alt="">
+                        <?php } ?>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <h4 class="card-title"><?php echo ucfirst($row['nama_produk']) ?></h4>
                         <div class="card-text">

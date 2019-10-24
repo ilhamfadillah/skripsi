@@ -6,7 +6,7 @@ class UsahaModel
     public function __construct()
     {
         $this->conn = $GLOBALS['conn'];
-        $this->user_table = "SELECT * FROM usaha_tables WHERE ";
+        $this->usaha_table = "SELECT * FROM usaha_tables WHERE ";
     }
     public function get_all()
     {
@@ -46,7 +46,7 @@ class UsahaModel
             $data[] = "$key = '$value'";
         }
         $condition = implode(" and ", $data);
-        $sql = $this->user_table." ".$condition." LIMIT 1";
+        $sql = $this->usaha_table." ".$condition." LIMIT 1";
         $result = $this->conn->query($sql);
         $row = mysqli_fetch_assoc($result);
         return $row;
@@ -100,7 +100,6 @@ class UsahaModel
 
     public function delete($id)
     {
-        $deleteWisata = $this->conn->query("DELETE FROM wisata_tables WHERE usaha_id=".$id."");
         $deleteUsaha = $this->conn->query("DELETE FROM usaha_tables WHERE id=".$id."");
     }
 
@@ -110,7 +109,7 @@ class UsahaModel
             $data[] = "$key = '$value'";
         }
         $condition = implode(" and ", $data);
-        $sql = $this->user_table." ".$condition;
+        $sql = $this->usaha_table." ".$condition;
         $result = $this->conn->query($sql);
         while ($row = mysqli_fetch_assoc($result)) {
             $rows[] = $row;
@@ -124,7 +123,7 @@ class UsahaModel
             $data[] = "$key = '$value'";
         }
         $condition = implode(" and ", $data);
-        $sql = $this->user_table." ".$condition." LIMIT 1";
+        $sql = $this->usaha_table." ".$condition." LIMIT 1";
         $result = $this->conn->query($sql);
         $row = mysqli_fetch_assoc($result);
         return $row;

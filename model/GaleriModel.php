@@ -42,4 +42,28 @@ class GaleriModel
         }
         return $rows;
     }
+
+    public function get_all_row_by_usaha_id($usaha_id)
+    {
+        $sql = $this->galeri_table." usaha_id='".$usaha_id."'";
+        $result = $this->conn->query($sql);
+        if($result->num_rows != 0){
+            while ($row = mysqli_fetch_assoc($result)) {
+                $rows[] = $row;
+            }
+        }else{
+            $rows = [];
+        }
+        return $rows;
+    }
+
+    public function delete_by_condition($params)
+    {
+        foreach ($params as $key => $value) {
+            $data[] = "$key = '$value'";
+        }
+        $condition = implode(" and ", $data);
+        $sql = "DELETE FROM galeri_tables WHERE " . $condition;
+        $result = $this->conn->query($sql);
+    }
 }

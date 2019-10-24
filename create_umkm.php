@@ -69,7 +69,8 @@
             <div class="sidebar-heading">Kabupaten Bandung </div>
             <div class="list-group list-group-flush">
                 <a href="/skripsi/admin_home.php" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-                <a href="/skripsi/umkm_home.php" class="list-group-item list-group-item-action bg-dark text-white">UMKM</a>
+                <a href="/skripsi/umkm_home.php"
+                    class="list-group-item list-group-item-action bg-dark text-white">UMKM</a>
                 <a href="/skripsi/wisata_home.php" class="list-group-item list-group-item-action bg-light">Wisata</a>
             </div>
         </div>
@@ -101,15 +102,16 @@
                                     </span>
                                 </span>
                             </div>
+                            <div class="alert alert-danger" role="alert" style="display:none"></div>
                             <div class="card-body">
-                                <form action="#" method="POST">
+                                <form action="#" method="POST" onsubmit="return validateForm()">
                                     <input type="hidden" name="kategori" value="umkm">
                                     <input type="hidden" name="user_id" value="<?php echo $_SESSION['admin']['id']; ?>">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="email">Nama Pengusaha</label>
-                                                <input type="text" class="form-control" id="namaa_perusahaan"
+                                                <input type="text" class="form-control" id="nama_perusahaan"
                                                     placeholder="Nama Pengelola" name="nama_perusahaan">
                                             </div>
                                             <div class="form-group">
@@ -129,7 +131,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="foto">Foto <small>(Max 3 Foto)</small></label>
-                                                <input type="file" class="form-control" name="foto">
+                                                <input type="file" class="form-control" id="foto" name="foto" multiple>
                                             </div>
                                             <div class="form-group">
                                                 <label for="kecamatan">Kecamatan</label>
@@ -309,11 +311,11 @@
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Polygon',
-                            'coordinates': [
-                                    <?php
-                                        include "arrayPolygon.php";
-                                        echo $polygonCoordinate;
-                                    ?>
+                            'coordinates': [ 
+                                <?php
+                                include "arrayPolygon.php";
+                                echo $polygonCoordinate; 
+                                ?>
                             ]
                         }
                     }
@@ -353,6 +355,57 @@
             $("#toggle-icon").removeClass('fa-arrow-right').addClass('fa-arrow-left');
         }
     });
+
+    function validateForm() {
+        var nama_pengusaha = $('#nama_perusahaan').val();
+        var produk_usaha = $('#nama_produk').val();
+        var foto = $('#foto').get(0).files;
+        var alamat = $('#alamat').val();
+        var message = "";
+        
+        if(nama_pengusaha == ""){
+            message += "<li>Nama Pengusaha Wajib Diisi</li>"
+        }
+        if(produk_usaha == ""){
+            message += "<li>Produk Usaha Wajib Diisi</li>"
+        }
+        if(alamat == ""){
+            message += "<li>Alamat Wajib Diisi</li>"
+        }
+
+        if(foto.length > 3){
+            message += "<li>Maksimal 3 Foto</li>";
+        }
+
+        var ukuran_foto = "";
+        var format_foto = "";
+        for(var i=0; i<foto.length; i++){
+            if(foto[i].size/1024 > 2048){
+                ukuran_foto += "true"; 
+            }
+            var ext = foto[i].type.split('/').pop().toLowerCase();
+            if($.inArray(ext,['jpg','jpeg','gif', 'png']) === -1){
+                format_foto += "true";
+            }
+        }
+
+        if(ukuran_foto != ''){
+            message += "<li>Ukuran File Foto Harus Dibawah 2MB</li>"
+        }
+
+        if(format_foto != ''){
+            message += "<li>Format File Foto Tidak Sesuai</li>";
+        }
+
+        if(message != ""){            
+            $('.alert').empty();
+            $('.alert').append("<ul>"+message+"</ul>");
+            $('.alert').show();
+            return false;
+        }else{
+            return true;
+        }
+    }
     </script>
 
 </body>

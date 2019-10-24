@@ -84,4 +84,13 @@ class WisataModel
         $set = implode(", ", $array);
         $insert = $this->conn->query("UPDATE wisata_tables set (".$set.") WHERE usaha_id=$id");
     }
+
+    public function delete($usaha_id)
+    {
+        $sql = "DELETE FROM wisata_tables WHERE usaha_id=".$usaha_id;
+        $result = $this->conn->query($sql);
+        if(is_null($this->conn->error)){
+            return true;
+        }
+    }
 }

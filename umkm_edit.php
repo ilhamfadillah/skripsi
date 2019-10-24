@@ -11,7 +11,7 @@
     }
 
     if (isset($_POST['update'])) {
-        var_dump($_FILES);exit;
+        $_POST['foto'] = $_FILES['foto'];
         $controller = new UsahaController();
         $usaha = $controller->update($_GET['id'], $_POST);
     }
@@ -390,6 +390,57 @@
             $("#toggle-icon").removeClass('fa-arrow-right').addClass('fa-arrow-left');
         }
     });
+
+    function validateForm() {
+        var nama_pengusaha = $('#nama_perusahaan').val();
+        var produk_usaha = $('#nama_produk').val();
+        var foto = $('#foto').get(0).files;
+        var alamat = $('#alamat').val();
+        var message = "";
+
+        if(nama_pengusaha == ""){
+            message += "<li>Nama Pengusaha Wajib Diisi</li>"
+        }
+        if(produk_usaha == ""){
+            message += "<li>Produk Usaha Wajib Diisi</li>"
+        }
+        if(alamat == ""){
+            message += "<li>Alamat Wajib Diisi</li>"
+        }
+
+        if(foto.length > 3){
+            message += "<li>Maksimal 3 Foto</li>";
+        }
+
+        var ukuran_foto = "";
+        var format_foto = "";
+        for(var i=0; i<foto.length; i++){
+            if(foto[i].size/1024 > 2048){
+                ukuran_foto += "true"; 
+            }
+            var ext = foto[i].type.split('/').pop().toLowerCase();
+            if($.inArray(ext,['jpg','jpeg','gif', 'png']) === -1){
+                format_foto += "true";
+            }
+        }
+
+        if(ukuran_foto != ''){
+            message += "<li>Ukuran File Foto Harus Dibawah 2MB</li>"
+        }
+
+        if(format_foto != ''){
+            message += "<li>Format File Foto Tidak Sesuai</li>";
+        }
+
+        if(message != ""){            
+            $('.alert').empty();
+            $('.alert').append("<ul>"+message+"</ul>");
+            $('.alert').show();
+            return false;
+        }else{
+            return true;
+        }
+    }
     </script>
 
 </body>

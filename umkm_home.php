@@ -12,8 +12,8 @@
     }
 
     if(isset($_POST['_method'])){
-        $usahaModel = new UsahaModel();
-        $deleteUsaha = $usahaModel->delete($_POST['id']);
+        $usahaController = new UsahaController();
+        $deleteUsaha = $usahaController->delete($_POST['id'], $_POST['kategori']);
     }
 ?>
 <!DOCTYPE html>
@@ -110,11 +110,11 @@
                                             <td class="text-center">
                                                 <a href="umkm_edit.php?id=<?php echo $row['id'] ?>"
                                                     class="btn btn-info">Edit</a>
-                                                <form action="#" method="POST">
+                                                <form action="#" method="POST" id="delete-<?php echo $row['id'] ?>">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
-                                                    <button class="btn btn-danger" type="button" data-toggle="modal"
-                                                        data-target="#myModal">
+                                                    <input type="hidden" name="kategori" value="<?php echo $row['kategori'] ?>">
+                                                    <button class="btn btn-danger delete" type="button" value="<?php echo $row['id'] ?>">
                                                         Hapus
                                                     </button>
                                                 </form>
@@ -138,7 +138,7 @@
     <div class="modal" id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
+                
                 <!-- Modal body -->
                 <div class="modal-body">
                     Yakin untuk menghapus data ini ?
@@ -146,7 +146,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" data-target="#confirm-delete">Ya</button>
+                    <button type="button" class="btn btn-warning confirm-delete" data-target="#confirm-delete">Ya</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Tidak</button>
                 </div>
 
@@ -175,6 +175,15 @@
             $("#toggle-icon").removeClass('fa-arrow-right').addClass('fa-arrow-left');
         }
     });
+
+    $('.delete').on('click', function() {
+        var usaha_id = $(this).val();
+        $('#myModal').modal('show');
+        $('.confirm-delete').on('click', function() {
+            $('#delete-'+usaha_id).submit();
+        });
+    });
+
     </script>
 
 </body>
